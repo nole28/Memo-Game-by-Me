@@ -75,5 +75,5 @@ struct EmojiMemoryGameView: View {
 
 
 #Preview {
-    EmojiMemoryGameView(viewModel: EmojiMemoryGame())
+    EmojiMemoryGameView(viewModel: EmojiMemoryGame( ))
 }

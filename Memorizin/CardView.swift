@@ -16,26 +16,20 @@ struct CardView: View {
         self.card = card
     }
     
-   
+    
     var body: some View {
-        ZStack {
-            let base = RoundedRectangle(cornerRadius: Constants.cornerRadius)
-            Group {
-                base.fill(.white)
-                base.strokeBorder(lineWidth: Constants.lineWidth)
-                Circle()
-                    .opacity(0.4)
+        Pie(endAngle: .degrees(240))
+            .opacity(Constants.Pie.opacity)
+            .overlay(
                 Text(card.content)
                     .font(.system(size: Constants.FontSize.largest))
                     .minimumScaleFactor(Constants.FontSize.scaleFactor)
                     .multilineTextAlignment(.center)
                     .aspectRatio(1 ,contentMode: .fit)
-                    .padding(Constants.inset)
-            }
-                .opacity(card.isFaceUp ? 1 : 0)
-                base.fill()
-                .opacity(card.isFaceUp ? 0 : 1)
-        }
+                    .padding(Constants.Pie.inset)
+            )
+            .padding(Constants.inset)
+            .cardify(isFaceUp: card.isFaceUp)
         .opacity(card.isFaceUp || !card.isMatched ? 1 : 0)
         
     }
@@ -46,11 +40,18 @@ struct CardView: View {
         static let inset: CGFloat = 5
         struct FontSize {
             static let largest: CGFloat = 200
-            static let smallest: CGFloat = 2
+            static let smallest: CGFloat = 10
             static let scaleFactor = smallest / largest
+        }
+        struct Pie {
+            static let opacity: CGFloat = 0.5
+            static let inset: CGFloat = 5
         }
     }
 }
+
+
+
 
 #Preview {
     typealias Card = CardView.Card
@@ -90,11 +91,12 @@ struct CardView_Previews: PreviewProvider {
                 CardView(Card(content: "c", id: "test"))
             }
             HStack {
-                CardView(Card(isFaceUp: true, content: "x", id: "test"))
-                CardView(Card(content: "c", id: "test"))
+                CardView(Card(isFaceUp: true, isMatched: true, content: "x", id: "test"))
+                CardView(Card(content: "Beata ❤️👶🏻", id: "test"))
             }
             .padding()
             .foregroundColor(.red)
         }
     }
 }
+
