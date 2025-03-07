@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct EmojiMemoryGameView: View {
+    typealias Card = MemoryGame<String>.Card
+    
     @ObservedObject var viewModel: EmojiMemoryGame
     
     private let aspectRatio: CGFloat = 2/3
@@ -18,28 +20,68 @@ struct EmojiMemoryGameView: View {
         VStack{
             cards
                 .foregroundColor(viewModel.color)
-                .animation(.default, value: viewModel.cards)
-            Button("Shuffle"){
-                viewModel.shuffle()
-                
+            HStack{
+                score
+                Spacer()
+                shuffle
             }
-            .background(Color.blue)
+            .font(.largeTitle)
         }
         .padding()
-        
+    }
+    
+    
+    
+    private var score: some View {
+        Text("SCORE: \(viewModel.score)")
+            .animation(nil)
+    }
+    
+    private var shuffle: some View {
+        Button(action: {
+            withAnimation {
+                viewModel.shuffle()
+            }
+        }) {
+            Image(systemName: "shuffle") // Shuffle icon
+                .font(.largeTitle) // Adjusts size
+                .padding()
+        }
     }
     
     private var cards: some View {
         AspectVGrid(items: viewModel.cards, aspectRatio: aspectRatio) { card in
             CardView(card)
-                .padding(5)
+                .padding(spacing)
+                .overlay(FlyingNumber(number: scoreChange(causedBy: card)))
+                .zIndex(scoreChange(causedBy: card) != 0 ? 1 : 0)
                 .onTapGesture {
-                    viewModel.choose(card)
+                    choose(card)
+                 
                 }
+            
         }
-        .foregroundColor(Color.orange)
     }
+    
+    private func choose(_ card: Card) {
+        withAnimation {
+            let scoreBeforeChoosing = viewModel.score
+            viewModel.choose(card)
+            let scoreChange = viewModel.score - scoreBeforeChoosing
+            lastScoreChange = (scoreChange, causedByCardId: card.id)
+        }
+    }
+    
+    @State private var lastScoreChange = (0, causedByCardId: "")
+    
+    private func scoreChange(causedBy card: Card) -> Int {
+        let (amount, id) = lastScoreChange
+        return card.id == id ? amount : 0
+    }
+    
 }
+
+
 
 //    var cardCountAdjusters: some View {
 //        HStack {

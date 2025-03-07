@@ -12,10 +12,10 @@ import SwiftUI
 class EmojiMemoryGame: ObservableObject {
     typealias Card = MemoryGame<String>.Card
     
-    private static let emoji = ["👽","🥷🏿","🦜","🐍","🍄","🐞","🐥","🌝","⭐️","🔥","☕️","🎱","🎲","💊","♐️","🗿","🏆","🥊"]
+    private static let emoji = ["👽","🥷🏿","🦜","🐍","🍄","🐞","🐥","🌎","⭐️","🔥","☕️","🎱","🎲","💊","♐️","🗿","🏆","🥊","✈️","🚔","🛟","🗿","🧪","🌡️","🌝","🌚","☀️","🌻","🦃","🦚","🎲","🐲","🐕","🦢","🦌","🐧"]
         
     private static func createMemoryGame() -> MemoryGame<String> {
-        return MemoryGame(numberOfPairsOfCards: 5) {  pairIndex in
+        return MemoryGame(numberOfPairsOfCards: 6) {  pairIndex in
             if emoji.indices.contains(pairIndex) {
                 return emoji[pairIndex]
             } else {
@@ -32,6 +32,10 @@ class EmojiMemoryGame: ObservableObject {
     
     var color: Color {
         .orange
+    }
+    
+    var score: Int {
+        model.score
     }
     
     //MARK: - Intent 1

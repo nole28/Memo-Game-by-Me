@@ -10,7 +10,7 @@ import SwiftUI
 struct CardView: View {
     typealias Card = MemoryGame<String>.Card
     
-    let card: MemoryGame<String>.Card
+    let card: Card
     
     init(_ card: Card) {
         self.card = card
@@ -27,10 +27,16 @@ struct CardView: View {
                     .multilineTextAlignment(.center)
                     .aspectRatio(1 ,contentMode: .fit)
                     .padding(Constants.Pie.inset)
+                    .rotationEffect(.degrees(card.isMatched ? 360 : 0))
+                    .animation(.spin(duration: 1), value: card.isMatched)
+
+//                    .animation(.linear(duration: 1.3).repeatForever(autoreverses: true), value: card.isMatched)
+//                    .animation((.snappy), value: card.isMatched)
             )
             .padding(Constants.inset)
             .cardify(isFaceUp: card.isFaceUp)
-        .opacity(card.isFaceUp || !card.isMatched ? 1 : 0)
+            .opacity(card.isFaceUp || !card.isMatched ? 1 : 0)
+
         
     }
     
@@ -47,6 +53,12 @@ struct CardView: View {
             static let opacity: CGFloat = 0.5
             static let inset: CGFloat = 5
         }
+    }
+}
+
+extension Animation {
+    static func spin(duration: TimeInterval) -> Animation {
+        .linear(duration: 0.8).repeatForever(autoreverses: false)
     }
 }
 
